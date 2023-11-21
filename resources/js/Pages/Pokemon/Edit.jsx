@@ -1,54 +1,90 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
-
 import React from 'react';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head, useForm, usePage, Link } from '@inertiajs/react';
+
 import TextInput from '../../Components/TextInput';
 import InputLabel from '../../Components/InputLabel';
 import PrimaryButton from '../../Components/PrimaryButton';
 
-export default function Index({ auth, poke, pokemon }) {
+export default function Edit(props) {
+
+    const { pokemon, generations } = usePage().props;
+    const optionState = props.pokemon.generation_id;
+    const { data, setData, put, errors } = useForm({
+        name: pokemon.name || "",
+        generation_id: pokemon.generation_id || "",
+    });
+  
+    function handleSubmit(e) {
+        e.preventDefault();
+        put(route("pokemon.update", pokemon.id));
+    }
     
     return (
         <AuthenticatedLayout
-            user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Pokewea</h2>}
+            user={props.auth.user}
+            errors={props.errors}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight"> Edit Pokewea</h2>}
         >
             <Head title="Pokewea" />
+            
 
-            <div className="py-8 ">
+            <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="text-center p-6 text-gray-900 font-bold text-xl">{pokemon.id} {pokemon.name}</div>
-                        <form id='my-form' action='/pokemon/update/6' >
-                            <div className="p-6 text-gray-900 grid grid-cols-4">
-                                <div className='px-6'>
-                                    <InputLabel className='font-bold px-6 pb-2'>Nombre</InputLabel>
-                                    <TextInput required className='mx-6 mb-4' name='name' defaultValue={pokemon.name} /> 
-                                </div>
-                                <div className='px-6'>
-                                    <InputLabel className='font-bold px-6 pb-2'>Gen</InputLabel>
-                                    <TextInput required className='mx-6 mb-4'  name='generation' defaultValue={pokemon.generation.id} /> 
-                                </div>
-                                
+                        <div className="p-6 bg-white border-b border-gray-200">
+  
+                            <div className="flex items-center justify-between mb-6">
+                                <Link
+                                    className="px-6 py-2 text-white bg-blue-500 rounded-md focus:outline-none"
+                                    href={ route("pokemon.index") }
+                                >
+                                    Back
+                                </Link>
+                            </div>
+  
+                            <form name="createForm" onSubmit={handleSubmit}>
+                                <div className="flex flex-col">
+                                    <div className="mb-4">
+                                        <label className="">Name</label>
+                                        <input
+                                            type="text"
+                                            className="w-full px-4 py-2"
+                                            label="name"
+                                            name="name"
+                                            value={data.name}
+                                            onChange={(e) =>
+                                                setData("name", e.target.value)
+                                            }
+                                        />
+                                        <span className="text-red-600">
+                                            {errors.title}
+                                        </span>
+                                    </div>
+                                    <div className="mb-0">
+                                        <label className="">generation_id</label>
+                                        <select className="w-full rounded" label="generation_id" name="generation_id" id="gen-select" defaultValue={optionState} onChange={(e) => setData("generation_id", e.target.value)}>
+                                        {generations.map((generation) => (
+                                                <option key={generation.id} value={generation.id}> {generation.name} </option> 
+                                            ))}
+                                        </select>
                                         
-                            </div>
-
-                            <div className="px-6 text-gray-900 grid grid-cols-4">
-                                <div className='px-6'>
-                                <InputLabel className='px-4 pb-2'>Types</InputLabel>
-                            { pokemon.types.map((type) => (<TextInput className='mx-6 mb-4' key={type.id}  name='types[]' defaultValue={type.name} /> ))}
+                                        <span className="text-red-600">
+                                            {errors.generations}
+                                        </span>
+                                    </div>
                                 </div>
-            
-                            </div>
-                            <input name="_method" type="hidden" value="PATCH"/>
-
-                            <div className='text-center mb-4'>
-                            <PrimaryButton form='my-form' type='submit'>Guardar</PrimaryButton>
+                                <div className="mt-4">
+                                    <button
+                                        type="submit"
+                                        className="px-6 py-2 font-bold text-white bg-green-500 rounded"
+                                    >
+                                        Update
+                                    </button>
+                                </div>
+                            </form>
+  
                         </div>
-                        </form>
-
-                        
-                        
                     </div>
                 </div>
             </div>

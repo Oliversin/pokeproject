@@ -53,6 +53,7 @@ export default function Index({ auth, poke }) {
                                             <td className="border px-4 py-2">
                                                 <Link
                                                     tabIndex="1"
+                                                    key={id}
                                                     className="px-4 py-2 text-sm text-white bg-blue-500 rounded"
                                                     href={route("pokemon.edit", id)}
                                                 >
@@ -61,6 +62,7 @@ export default function Index({ auth, poke }) {
                                                 <button
                                                     onClick={destroy}
                                                     id={id}
+                                                    
                                                     tabIndex="-1"
                                                     type="button"
                                                     className="mx-1 px-4 py-2 text-sm text-white bg-red-500 rounded"

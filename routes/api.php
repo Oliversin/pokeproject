@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+Route::post('/pokemon', [PokemonController::class, 'store'])->name('pokemon.store');
 Route::get('/pokemon/get', [PokemonController::class, 'index']);
 
 Route::get('/abilities/get', [AbilityController::class, 'index']);

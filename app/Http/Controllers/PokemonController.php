@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Models\Pokemon;
+use App\Models\Generation;
 use App\Models\Type;
 
 class PokemonController extends Controller
@@ -47,17 +48,15 @@ class PokemonController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|max:255', 
             'generation_id' => 'required',
-            'sprite' => 'nullable',
-            'types' => 'nullable',
-            'types[]' => 'nullable',
+
         ]);
 
         // Create a new Pokemon instance with the validated data
         $pokemon = new Pokemon([
             'name' => $validatedData['name'],
-            'generation_id' => $validatedData['generation'],
-            'sprite' => $validatedData['sprite'],
-            'types[]' => $validatedData['types[]'],
+            'generation_id' => $validatedData['generation_id'],
+            'sprite' => $validatedData['name'].'.jpg',
+            
 
         ]);
 
@@ -90,10 +89,12 @@ class PokemonController extends Controller
      */
     public function edit(string $id)
     {
+        $generations = Generation::all();
         $pokemon = Pokemon::with('types')->with('generation')->find($id); // Retrieve all posts from the database
 
         return Inertia::render('Pokemon/Edit', [
             'pokemon' => $pokemon,
+            'generations' => $generations,
         ]); // Return the data as JSON
     }
 
@@ -113,8 +114,8 @@ class PokemonController extends Controller
         // Create a new Pokemon instance with the validated data
         $pokemon->update([
             'name' => $validatedData['name'],
-            'generation_id' => $validatedData['generation'],
-            'sprite' => $validatedData['sprite'],
+            'generation_id' => $validatedData['generation_id'],
+            'sprite' => $validatedData['name'].'.jpg',
             
 
         ]);

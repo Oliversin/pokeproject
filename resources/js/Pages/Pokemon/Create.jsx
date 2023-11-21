@@ -1,20 +1,20 @@
+import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm, Link } from '@inertiajs/react';
 
-import React from 'react';
-import TextInput from '../../Components/TextInput';
-import InputLabel from '../../Components/InputLabel';
-import PrimaryButton from '../../Components/PrimaryButton';
+
+
 
 export default function Create( props) {
-    const { data, setData, errors, pokemon } = useForm({
-        title: "",
-        description: "",
+    const { data, setData, errors, post } = useForm({
+        name: "",
+        generation: "",
+        types: "",
     });
 
     function handleSubmit(e) {
         e.preventDefault();
-        pokemon(route("pokemon.store"));
+        post(route("pokemon.store"));
     }
     
     return (
@@ -45,7 +45,7 @@ export default function Create( props) {
                                         <input
                                             type="text"
                                             className="w-full px-4 py-2"
-                                            label="Name"
+                                            label="name"
                                             name="name"
                                             value={data.name}
                                             onChange={(e) =>
@@ -61,8 +61,8 @@ export default function Create( props) {
                                         <textarea
                                             type="text"
                                             className="w-full rounded"
-                                            label="generation"
-                                            name="generation"
+                                            label="generation_id"
+                                            name="generation_id"
                                             errors={errors.generation}
                                             value={data.generation}
                                             onChange={(e) =>

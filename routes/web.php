@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PokemonController;
+use App\Http\Controllers\TestController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -16,6 +17,7 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::resource('tests', TestController::class);
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -29,13 +31,16 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-Route::post('/pokemon/update/{id}', [PokemonController::class, 'update'])->name('pokemon.update');
-Route::middleware('auth')->group(function () {
-    Route::get('/pokemon', [PokemonController::class, 'list'])->name('pokemon.index');
+Route::put('/pokemon/update/{id}', [PokemonController::class, 'update'])->name('pokemon.update');
+Route::post('/pokemon', [PokemonController::class, 'store'])->name('pokemon.store');
+Route::get('/pokemon', [PokemonController::class, 'list'])->name('pokemon.index');
     Route::get('/pokemon/show/{id}', [PokemonController::class, 'showView'])->name('pokemon.show');
     Route::get('/pokemon/edit/{id}', [PokemonController::class, 'edit'])->name('pokemon.edit');
     Route::get('/pokemon/create', [PokemonController::class, 'create'])->name('pokemon.create');
-    Route::post('/pokemon', [PokemonController::class, 'store'])->name('pokemon.store');
+
+Route::middleware('auth')->group(function () {
+    
+    
 
     Route::delete('/pokemon/{id}', [PokemonController::class, 'destroy'])->name('pokemon.destroy');
     
