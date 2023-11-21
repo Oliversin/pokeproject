@@ -1,14 +1,16 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm, Link } from '@inertiajs/react';
+import { Head, useForm, usePage, Link } from '@inertiajs/react';
 
 
 
 
 export default function Create( props) {
-    const { data, setData, errors, post } = useForm({
+    
+    const { generations } = usePage().props;
+    const {  data, setData, errors, post } = useForm({
         name: "",
-        generation: "",
+        generation_id: 1 || "",
         types: "",
     });
 
@@ -56,39 +58,18 @@ export default function Create( props) {
                                             {errors.name}
                                         </span>
                                     </div>
-                                    <div className="mb-0">
-                                        <label className="">Generation</label>
-                                        <textarea
-                                            type="text"
-                                            className="w-full rounded"
-                                            label="generation_id"
-                                            name="generation_id"
-                                            errors={errors.generation}
-                                            value={data.generation}
-                                            onChange={(e) =>
-                                                setData("generation", e.target.value)
-                                            }
-                                        />
-                                        <span className="text-red-600">
-                                            {errors.generation}
-                                        </span>
-                                    </div>
                                     <div className="mb-4">
-                                        <label className="">Type</label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-2"
-                                            label="Type"
-                                            name="type"
-                                            value={data.type}
-                                            onChange={(e) =>
-                                                setData("title", e.target.value)
-                                            }
-                                        />
+                                        <label className="">Generation</label>
+                                        <select className="w-full rounded" label="generation_id" name="generation_id" id="gen-select"  onChange={(e) => setData("generation_id", e.target.value)}>
+                                        {generations.map((generation) => (
+                                                <option key={generation.id} value={generation.id}> {generation.name} </option> 
+                                            ))}
+                                        </select>
                                         <span className="text-red-600">
-                                            {errors.type}
+                                            {errors.generation_id}
                                         </span>
                                     </div>
+                                    
                                 </div>
                                 <div className="mt-4">
                                     <button

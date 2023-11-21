@@ -37,7 +37,10 @@ class PokemonController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Pokemon/Create'); // Return the data as JSON
+        $generations = Generation::all();
+        return Inertia::render('Pokemon/Create', [
+            'generations' => $generations,
+        ]); // Return the data as JSON
     }
 
     /**
