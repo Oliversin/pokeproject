@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Inertia\Inertia;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Models\Pokemon;
@@ -13,8 +14,21 @@ class PokemonController extends Controller
      */
     public function index()
     {
+        
         $pokemons = Pokemon::with('types')->with('generation')->get(); // Retrieve all posts from the database
         return response()->json($pokemons, Response::HTTP_OK); // Return the data as JSON
+    }
+
+    public function list()
+    {
+        
+        $pokemons = Pokemon::with('types')->with('generation')->get(); // Retrieve all posts from the database
+
+        return Inertia::render('Pokemon/Index', [
+            'pokemons' => $pokemons,
+            'poke' => Pokemon::find(1),
+        ]);
+        //return response()->json($pokemons, Response::HTTP_OK); // Return the data as JSON
     }
 
     /**
@@ -22,7 +36,7 @@ class PokemonController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Pokemon/Create'); // Return the data as JSON
     }
 
     /**
@@ -34,19 +48,22 @@ class PokemonController extends Controller
             'name' => 'required|max:255', 
             'generation_id' => 'required',
             'sprite' => 'nullable',
+            'types' => 'nullable',
+            'types[]' => 'nullable',
         ]);
 
-        // Create a new Post instance with the validated data
-        $post = new Pokemon([
+        // Create a new Pokemon instance with the validated data
+        $pokemon = new Pokemon([
             'name' => $validatedData['name'],
             'generation_id' => $validatedData['generation'],
             'sprite' => $validatedData['sprite'],
+            'types[]' => $validatedData['types[]'],
 
         ]);
 
-        $post->save(); // Save the new post to the database
+        $pokemon->save(); // Save the new pokemon to the database
 
-        return response()->json($post, Response::HTTP_CREATED); // Return the new post as JSON
+        return response()->json($pokemon, Response::HTTP_CREATED); // Return the new pokemon as JSON
     }
 
     /**
@@ -54,7 +71,18 @@ class PokemonController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $pokemon = Pokemon::with('types')->with('generation')->find($id); // Retrieve all posts from the database
+
+        return response()->json($pokemon, Response::HTTP_OK); // Return the data as JSON
+    }
+
+    public function showView(string $id)
+    {
+        $pokemon = Pokemon::with('types')->with('generation')->find($id); // Retrieve all posts from the database
+
+        return Inertia::render('Pokemon/Show', [
+            'pokemon' => $pokemon,
+        ]); // Return the data as JSON
     }
 
     /**
@@ -62,7 +90,11 @@ class PokemonController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $pokemon = Pokemon::with('types')->with('generation')->find($id); // Retrieve all posts from the database
+
+        return Inertia::render('Pokemon/Edit', [
+            'pokemon' => $pokemon,
+        ]); // Return the data as JSON
     }
 
     /**
@@ -70,7 +102,31 @@ class PokemonController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $pokemon = Pokemon::find($id);
+        $validatedData = $request->validate([
+            'name' => 'required|max:255', 
+            'generation_id' => 'required',
+            'sprite' => 'nullable',
+            
+        ]);
+
+        // Create a new Pokemon instance with the validated data
+        $pokemon->update([
+            'name' => $validatedData['name'],
+            'generation_id' => $validatedData['generation'],
+            'sprite' => $validatedData['sprite'],
+            
+
+        ]);
+        return redirect()->route('pokemon.index');
+        //return redirect()->back();
+
+        return response()->json([
+            'message' => 'En espera de publicación',
+            'code' => 1,
+        ], 200);
+
+       // $pokemon->save(); // Save the new pokemon to the database
     }
 
     /**
@@ -78,6 +134,7 @@ class PokemonController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Pokemon::find($id)->delete();
+
     }
 }

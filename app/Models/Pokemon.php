@@ -12,7 +12,7 @@ class Pokemon extends Model
     use HasFactory;
     protected $table = 'pokemons';
 
-    protected $fillable = ['name','sprite'];
+    protected $fillable = ['name','sprite','generation_id'];
 
     public function types(): BelongsToMany{
         return $this->BelongsToMany(Type::class, 'pokemons_types','pokemon_id','type_id');
